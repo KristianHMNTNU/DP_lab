@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 
-from NPO import NPOObserver
+from .NPO import NPOObserver
 
 
 class NPOObserverNode(Node):
