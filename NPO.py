@@ -19,8 +19,8 @@ class NPOObserver:
         self.omega_c = 0.2
         self.Tb = 142.0 * np.eye(3)
         self.L1 = self.omega_c * np.eye(3)
-        self.L2 = 2.9 * self.omega_c * np.eye(3)
-        self.L3 = 0.8 * self.omega_c * np.eye(3)
+        self.L2 = 1 * self.omega_c * np.eye(3)
+        self.L3 = 0.4 * self.omega_c * np.eye(3)
 
         self.M_inv = np.linalg.inv(self.M)
         self.Tb_inv = np.linalg.inv(self.Tb)

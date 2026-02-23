@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 import numpy as np
+import math
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
@@ -18,20 +18,12 @@ class NPOObserverNode(Node):
         self.nu  = np.zeros(3)
         self.tau = np.zeros(3)
         self.got_eta = False
-        self.got_nu  = False
         self.initialized = False
 
         self.create_subscription(
             Float32MultiArray,
-            'tmr4243/states/eta',
+            '/tmr4243/state/eta',
             self.cb_eta,
-            10
-        )
-
-        self.create_subscription(
-            Float32MultiArray,
-            'tmr4243/states/nu',
-            self.cb_nu,
             10
         )
 
@@ -42,28 +34,34 @@ class NPOObserverNode(Node):
             10
         )
 
-        self.pub = self.create_publisher(
+        self.pub_eta_hat = self.create_publisher(
             Float32MultiArray,
-            '/tau_cmd_obs',
+            '/eta_hat',
+            10
+        )
+
+        self.pub_nu_hat = self.create_publisher(
+            Float32MultiArray,
+            '/nu_hat',
             10
         )
 
         self.dt = 0.01
         self.create_timer(self.dt, self.step)
 
-    def cb_eta(self, msg):
-        self.eta = np.array(msg.data[:3], dtype=float)
-        self.got_eta = True
 
-    def cb_nu(self, msg):
-        self.nu = np.array(msg.data[:3], dtype=float)
-        self.got_nu = True
+    def cb_eta(self, msg):
+        x = float(msg.data[0])
+        y = float(msg.data[1])
+        psi = self.obs.wrap_angle(float(msg.data[2]))
+        self.eta = np.array([x, y, psi], dtype=float)
+        self.got_eta = True
         
     def cb_tau(self, msg):
         self.tau = np.array(msg.data[:3], dtype=float)
 
     def step(self):
-        if (not self.initialized) and self.got_eta and self.got_nu:
+        if (not self.initialized) and self.got_eta:
             self.obs.reset(self.eta, self.nu)
             self.initialized = True
 
@@ -72,10 +70,15 @@ class NPOObserverNode(Node):
 
         eta_hat, nu_hat, b_hat = self.obs.step(self.dt, self.eta, self.tau)
 
-        out = Float32MultiArray()
-        out.data = [float(b_hat[0]), float(b_hat[1]), float(b_hat[2])]
-        self.pub.publish(out)
+        # Publish eta_hat
+        msg_eta_hat = Float32MultiArray()
+        msg_eta_hat.data = [float(eta_hat[0]), float(eta_hat[1]), float(eta_hat[2])]
+        self.pub_eta_hat.publish(msg_eta_hat)
 
+        # Publish nu_hat
+        msg_nu_hat = Float32MultiArray()
+        msg_nu_hat.data = [float(nu_hat[0]), float(nu_hat[1]), float(nu_hat[2])]
+        self.pub_nu_hat.publish(msg_nu_hat)
 
 def main():
     rclpy.init()
