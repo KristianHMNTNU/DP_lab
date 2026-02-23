@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Viktig: importer klassen (ikke bare modulen)
 from NPO import NPOObserver
 
 dt = 0.01
 T  = 200.0
 N  = int(T/dt) + 1
 t  = np.linspace(0.0, T, N)
-w = 0 * 1e-5 * np.ones(3)
+
+w = 1.0 * 1e-5 * np.ones(3)
 
 obs = NPOObserver()
 
@@ -30,9 +30,10 @@ eta_tilde_log = np.zeros((N,3))
 nu_tilde_log  = np.zeros((N,3))
 b_tilde_log   = np.zeros((N,3))
 
+b_hat_prev = b_tilde0.copy()
+
 for k, tk in enumerate(t):
 
-    # psi(t) = 0.1 t (eksakt)
     eta_true[:] = 0.0
     eta_true[2] = obs.wrap_angle(0.1 * tk)
 
@@ -41,9 +42,12 @@ for k, tk in enumerate(t):
 
     eta_hat, nu_hat, b_hat = obs.step(dt, eta_meas, tau)
 
+    if k > 0:
+        b_true[:] = b_hat_prev
+    b_hat_prev = b_hat.copy()
+
     eta_tilde = eta_true - eta_hat
     eta_tilde[2] = obs.wrap_angle(eta_tilde[2])
-
 
     nu_true[:] = 0.0
     nu_true[2] = 0.1
@@ -55,32 +59,43 @@ for k, tk in enumerate(t):
     nu_tilde_log[k,:]  = nu_tilde
     b_tilde_log[k,:]   = b_tilde
 
-fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
 
-# --- eta tilde ---
-axs[0].plot(t, eta_tilde_log[:,0], label=r'$\tilde{x}$')
-axs[0].plot(t, eta_tilde_log[:,1], label=r'$\tilde{y}$')
-axs[0].plot(t, eta_tilde_log[:,2], label=r'$\tilde{\psi}$')
-axs[0].set_ylabel(r'$\tilde{\eta}$')
-axs[0].grid(True)
-axs[0].legend()
-
-# --- nu tilde ---
-axs[1].plot(t, nu_tilde_log[:,0], label=r'$\tilde{u}$')
-axs[1].plot(t, nu_tilde_log[:,1], label=r'$\tilde{v}$')
-axs[1].plot(t, nu_tilde_log[:,2], label=r'$\tilde{r}$')
-axs[1].set_ylabel(r'$\tilde{\nu}$')
-axs[1].grid(True)
-axs[1].legend()
-
-# --- b tilde ---
-axs[2].plot(t, b_tilde_log[:,0], label=r'$\tilde{b}_x$')
-axs[2].plot(t, b_tilde_log[:,1], label=r'$\tilde{b}_y$')
-axs[2].plot(t, b_tilde_log[:,2], label=r'$\tilde{b}_\psi$')
-axs[2].set_ylabel(r'$\tilde{b}$')
-axs[2].set_xlabel('Time [s]')
-axs[2].grid(True)
-axs[2].legend()
-
+# -------- Plot 1: eta_tilde --------
+plt.figure(figsize=(8,5))
+plt.plot(t, eta_tilde_log[:,0], label=r'$\tilde{x}$')
+plt.plot(t, eta_tilde_log[:,1], label=r'$\tilde{y}$')
+plt.plot(t, eta_tilde_log[:,2], label=r'$\tilde{\psi}$')
+plt.xlabel('Time [s]')
+plt.ylabel(r'$\tilde{\eta}$')
+plt.grid(True)
+plt.legend()
 plt.tight_layout()
+plt.savefig("eta_tilde.png", dpi=300)
+
+
+# -------- Plot 2: nu_tilde --------
+plt.figure(figsize=(8,5))
+plt.plot(t, nu_tilde_log[:,0], label=r'$\tilde{u}$')
+plt.plot(t, nu_tilde_log[:,1], label=r'$\tilde{v}$')
+plt.plot(t, nu_tilde_log[:,2], label=r'$\tilde{r}$')
+plt.xlabel('Time [s]')
+plt.ylabel(r'$\tilde{\nu}$')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("nu_tilde.png", dpi=300)
+
+
+# -------- Plot 3: b_tilde --------
+plt.figure(figsize=(8,5))
+plt.plot(t, b_tilde_log[:,0], label=r'$\tilde{b}_x$')
+plt.plot(t, b_tilde_log[:,1], label=r'$\tilde{b}_y$')
+plt.plot(t, b_tilde_log[:,2], label=r'$\tilde{b}_\psi$')
+plt.xlabel('Time [s]')
+plt.ylabel(r'$\tilde{b}$')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("b_tilde.png", dpi=300)
+
 plt.show()

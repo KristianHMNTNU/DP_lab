@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 class NPOObserver:
 
     def __init__(self):
-
+        
         self.M  = np.array([
         [9.9,  0.0,  0.0],
         [0.0, 10.8,  0.23],
@@ -18,9 +18,15 @@ class NPOObserver:
         self.Ab = 0
         self.omega_c = 0.2
         self.Tb = 142.0 * np.eye(3)
-        self.L1 = self.omega_c * np.eye(3)
-        self.L2 = 1 * self.omega_c * np.eye(3)
-        self.L3 = 0.4 * self.omega_c * np.eye(3)
+        self.L1 = np.diag([2.5, 2.5, 3.5])
+        self.L2 = np.diag([8, 8, 4])
+        self.L3 = np.diag([1, 1, 0.5])
+        #self.L1 = self.omega_c * np.eye(3)
+        #self.L2 = 1 * self.omega_c * np.eye(3)
+        #self.L3 = 0.4 * self.omega_c * np.eye(3)
+        #self.L1 = 0.3 * np.eye(3)
+        #self.L2 = 0.15 * np.eye(3)
+        #self.L3 = 0.03 * np.eye(3)
 
         self.M_inv = np.linalg.inv(self.M)
         self.Tb_inv = np.linalg.inv(self.Tb)
