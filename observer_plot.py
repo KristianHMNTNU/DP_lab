@@ -8,21 +8,14 @@ T  = 200.0
 N  = int(T/dt) + 1
 t  = np.linspace(0.0, T, N)
 
-w = 1.0 * 1e-5 * np.ones(3)
+noise_power = 1e-5
+sigma = np.sqrt(noise_power)
 
 obs = NPOObserver()
 
-eta_tilde0 = np.array([1.0, 1.0, np.pi/4])
-nu_tilde0  = np.array([0.1, 0.1, 0.0])
-b_tilde0   = np.array([0.1, -0.1, 0.01])
-
-eta_true = np.zeros(3)
-nu_true  = np.zeros(3)
-b_true   = np.zeros(3)
-
-obs.reset(eta_true - eta_tilde0,
-          nu_true  - nu_tilde0,
-          b_true   - b_tilde0)
+eta_tilde = np.array([1.0, 1.0, np.pi/4])
+nu_tilde  = np.array([0.1, 0.1, 0.0])
+b_tilde   = np.array([0.1, -0.1, 0.01])
 
 tau = np.zeros(3)
 
@@ -30,37 +23,31 @@ eta_tilde_log = np.zeros((N,3))
 nu_tilde_log  = np.zeros((N,3))
 b_tilde_log   = np.zeros((N,3))
 
-b_hat_prev = b_tilde0.copy()
 
 for k, tk in enumerate(t):
 
-    eta_true[:] = 0.0
-    eta_true[2] = obs.wrap_angle(0.1 * tk)
+    psi = obs.wrap_angle(0.1 * tk)
+    w = sigma * np.random.randn(3)
 
-    eta_meas = eta_true + w
-    eta_meas[2] = obs.wrap_angle(eta_meas[2])
+    y_tilde = eta_tilde + w
+    y_tilde[2] = obs.wrap_angle(y_tilde[2])
 
-    eta_hat, nu_hat, b_hat = obs.step(dt, eta_meas, tau)
+    Rpsi = obs.R(psi)
 
-    if k > 0:
-        b_true[:] = b_hat_prev
-    b_hat_prev = b_hat.copy()
+    eta_tilde_dot = Rpsi @ nu_tilde - obs.L1 @ y_tilde
+    nu_tilde_dot  = obs.M_inv @ (-obs.D @ nu_tilde + b_tilde - obs.L2 @ (Rpsi.T @ y_tilde))
+    b_tilde_dot   = -obs.Tb_inv @ b_tilde - obs.L3 @ (Rpsi.T @ y_tilde)
 
-    eta_tilde = eta_true - eta_hat
+    eta_tilde += dt * eta_tilde_dot
+    nu_tilde  += dt * nu_tilde_dot
+    b_tilde   += dt * b_tilde_dot
     eta_tilde[2] = obs.wrap_angle(eta_tilde[2])
-
-    nu_true[:] = 0.0
-    nu_true[2] = 0.1
-
-    nu_tilde = nu_true - nu_hat
-    b_tilde  = b_true - b_hat
 
     eta_tilde_log[k,:] = eta_tilde
     nu_tilde_log[k,:]  = nu_tilde
     b_tilde_log[k,:]   = b_tilde
 
 
-# -------- Plot 1: eta_tilde --------
 plt.figure(figsize=(8,5))
 plt.plot(t, eta_tilde_log[:,0], label=r'$\tilde{x}$')
 plt.plot(t, eta_tilde_log[:,1], label=r'$\tilde{y}$')
@@ -70,10 +57,9 @@ plt.ylabel(r'$\tilde{\eta}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("eta_tilde.png", dpi=300)
+plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\eta_tilde.png", dpi=300)
 
 
-# -------- Plot 2: nu_tilde --------
 plt.figure(figsize=(8,5))
 plt.plot(t, nu_tilde_log[:,0], label=r'$\tilde{u}$')
 plt.plot(t, nu_tilde_log[:,1], label=r'$\tilde{v}$')
@@ -83,10 +69,9 @@ plt.ylabel(r'$\tilde{\nu}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("nu_tilde.png", dpi=300)
+plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\nu_tilde.png", dpi=300)
 
 
-# -------- Plot 3: b_tilde --------
 plt.figure(figsize=(8,5))
 plt.plot(t, b_tilde_log[:,0], label=r'$\tilde{b}_x$')
 plt.plot(t, b_tilde_log[:,1], label=r'$\tilde{b}_y$')
@@ -96,6 +81,6 @@ plt.ylabel(r'$\tilde{b}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("b_tilde.png", dpi=300)
+plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\b_tilde.png", dpi=300)
 
 plt.show()
