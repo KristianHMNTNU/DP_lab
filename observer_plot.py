@@ -57,7 +57,7 @@ plt.ylabel(r'$\tilde{\eta}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\eta_tilde.png", dpi=300)
+#plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\eta_tilde.png", dpi=300)
 
 
 plt.figure(figsize=(8,5))
@@ -69,7 +69,7 @@ plt.ylabel(r'$\tilde{\nu}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\nu_tilde.png", dpi=300)
+#plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\nu_tilde.png", dpi=300)
 
 
 plt.figure(figsize=(8,5))
@@ -81,6 +81,6 @@ plt.ylabel(r'$\tilde{b}$')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\b_tilde.png", dpi=300)
+#plt.savefig("C:\\Users\\krist\\Desktop\\NTNU\\8. Semester\\Marreg\\Lab prosjekt\\Case B\\Plots\\b_tilde.png", dpi=300)
 
 plt.show()
