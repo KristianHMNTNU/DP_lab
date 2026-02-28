@@ -19,7 +19,7 @@ class NPOObserver:
         #self.omega_c = 
         self.Tb = 142.0 * np.eye(3)
         self.L1 = np.diag([4, 4, 4])
-        self.L2 = np.diag([9, 9, 7])
+        self.L2 = np.diag([9, 9, 7]) * 2
         self.L3 = 0.1 * self.L2
 
 
