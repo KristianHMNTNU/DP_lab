@@ -20,6 +20,7 @@ class TANode(Node):
 
         # Publishers 
         self.pub_u = self.create_publisher(Float32MultiArray, 'tmr4243/command/u', 10)
+        self.pub_F = self.create_publisher(Float32MultiArray,'tmr4243/command/F_cmd', 10)
 
     def cb(self, msg):
         tau_cmd = np.array(msg.data, dtype=float)
@@ -32,6 +33,10 @@ class TANode(Node):
         u_msg = Float32MultiArray()
         u_msg.data = np.asarray(u, dtype=float).flatten().tolist()
         self.pub_u.publish(u_msg)
+
+        F_msg = Float32MultiArray()
+        F_msg.data = np.asarray(F_cmd, dtype=float).flatten().tolist()
+        self.pub_F.publish(F_msg)
 
         self.get_logger().info(
             f"tau={tau_cmd}  u={np.asarray(u).round(3)}  "

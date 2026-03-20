@@ -20,9 +20,10 @@ class PS5ToTau(Node):
         self.pub = self.create_publisher(Float32MultiArray, '/tau_cmd', 10)
 
         # Scale correctly
-        self.tau_max = [1.0, 1.0, 1.0]  # [surge, sway, yaw]
+        self.tau_max = [2.0, 2.0, 1.0]  # [surge, sway, yaw]
 
     def cb(self, msg: Joy):
+
         surge =  deadzone(msg.axes[1])
         sway  =  -deadzone(msg.axes[0])
 
