@@ -10,7 +10,7 @@ from .NPO import NPOObserver
 class NPOObserverNode(Node):
 
     def __init__(self):
-        super().__init__('npo_observer_node')
+        super().__init__('npo_node')
 
         self.obs = NPOObserver()
 
