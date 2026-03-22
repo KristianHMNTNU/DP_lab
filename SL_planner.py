@@ -5,7 +5,7 @@ class StraightLinePathPlanner:
     def __init__(self, p0, p1, psi_d, U_ref, mu, eps=1e-3):
         self.p0 = np.array(p0, dtype=float)
         self.p1 = np.array(p1, dtype=float)
-        self.psi_d = np.deg2rad(float(psi_d))
+        self.psi_d = float(psi_d)
 
         self.U_ref = float(U_ref)
         self.mu = float(mu)

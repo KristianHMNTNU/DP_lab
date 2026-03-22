@@ -60,25 +60,34 @@ class PathPlannerNode(Node):
         self.station_ref[0:2] = msg.data[:2]
 
     def cb_joy(self, msg):
-        if msg.buttons[0] == 1 and self.mode != 'STATION_KEEPING':
+        if msg.buttons[0] == 1 and self.prev_buttons[0] == 0:
             self.mode = 'STATION_KEEPING'
             self.station_ref = self.eta_hat.copy()
 
-        if msg.buttons[2] == 1 and self.mode != 'PATH_FOLLOWING':
+        if msg.buttons[2] == 1 and self.prev_buttons[2] == 0:
             self.mode = 'PATH_FOLLOWING'
 
             # reset s til start (enkel løsning)
             self.s = 0.0
 
+        self.prev_buttons = msg.buttons.copy()
         L2 = msg.axes[2]
         R2 = msg.axes[5]
 
         psi_dot = 0.5 * (R2 - L2)
         self.psi_ref += psi_dot * self.dt
 
-        self.U_ref = 1.0 * msg.axes[1]
+        k_u = 0.1   # tuning parameter
+        U_ref_dot = k_u * msg.axes[1]
+        self.U_ref += U_ref_dot * self.dt
+        U_MAX = 1.0
+        self.U_ref = np.clip(self.U_ref, -U_MAX, U_MAX)
 
         self.update_planner()
+
+        self.get_logger().info(
+        f"MODE: {self.mode} | U_ref: {self.U_ref:.2f} | psi_ref: {self.psi_ref:.2f}"
+        )
 
 
     def update_planner(self):

@@ -38,10 +38,10 @@ class TANode(Node):
         F_msg.data = np.asarray(F_cmd, dtype=float).flatten().tolist()
         self.pub_F.publish(F_msg)
 
-        self.get_logger().info(
+        """self.get_logger().info(
             f"tau={tau_cmd}  u={np.asarray(u).round(3)}  "
             f"F={np.asarray(F_cmd).round(3)}  alpha={np.asarray(alpha_cmd).round(3)}"
-        )
+        )"""
 
 
 def main():
