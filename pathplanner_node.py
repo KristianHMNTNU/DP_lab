@@ -70,14 +70,15 @@ class PathPlannerNode(Node):
             # reset s til start (enkel løsning)
             self.s = 0.0
 
-        self.prev_buttons = msg.buttons.copy()
+        self.prev_buttons = list(msg.buttons)
+
         L2 = msg.axes[2]
         R2 = msg.axes[5]
 
-        psi_dot = 0.5 * (R2 - L2)
+        psi_dot = 0.5 * (L2 - R2)
         self.psi_ref += psi_dot * self.dt
 
-        k_u = 0.1   # tuning parameter
+        k_u = 0.5   # tuning parameter
         U_ref_dot = k_u * msg.axes[1]
         self.U_ref += U_ref_dot * self.dt
         U_MAX = 1.0
@@ -86,7 +87,7 @@ class PathPlannerNode(Node):
         self.update_planner()
 
         self.get_logger().info(
-        f"MODE: {self.mode} | U_ref: {self.U_ref:.2f} | psi_ref: {self.psi_ref:.2f}"
+        f"MODE: {self.mode} | U_ref: {self.U_ref:.2f} | psi_ref: {self.psi_ref:.2f} | Start: {self.p0} | End: {self.p1} | Station Ref: {self.station_ref[:2]}"
         )
 
 
