@@ -87,7 +87,7 @@ class PathPlannerNode(Node):
         self.update_planner()
 
         self.get_logger().info(
-        f"MODE: {self.mode} | U_ref: {self.U_ref:.2f} | psi_ref: {self.psi_ref:.2f} | Start: {self.p0} | End: {self.p1} | Station Ref: {self.station_ref[:2]}"
+        f"MODE: {self.mode} | U_ref: {self.U_ref:.2f} | psi_ref: {np.rad2deg(self.psi_ref):.2f} | Start: {self.p0} | End: {self.p1} | Station Ref: {self.station_ref[:2]}"
         )
 
 
