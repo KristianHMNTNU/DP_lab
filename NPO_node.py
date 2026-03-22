@@ -46,6 +46,12 @@ class NPOObserverNode(Node):
             10
         )
 
+        self.pub_b_hat = self.create_publisher(
+            Float32MultiArray,
+            '/b_hat',
+            10
+        )
+
         self.dt = 0.01
         self.create_timer(self.dt, self.step)
 
@@ -79,6 +85,11 @@ class NPOObserverNode(Node):
         msg_nu_hat = Float32MultiArray()
         msg_nu_hat.data = [float(nu_hat[0]), float(nu_hat[1]), float(nu_hat[2])]
         self.pub_nu_hat.publish(msg_nu_hat)
+
+        # Publish b_hat
+        msg_b_hat = Float32MultiArray()
+        msg_b_hat.data = [float(b_hat[0]), float(b_hat[1]), float(b_hat[2])]
+        self.pub_b_hat.publish(msg_b_hat)
 
 def main():
     rclpy.init()
