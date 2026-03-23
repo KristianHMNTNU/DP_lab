@@ -18,8 +18,8 @@ class PathPlannerNode(Node):
         self.mode = 'PATH_FOLLOWING'
 
         self.psi_ref = 0.0
-        self.U_ref = 0.5
-        self.mu = 0.1
+        self.U_ref = 0.0
+        self.mu = 0.2
 
         self.p0 = np.array([0.0, 0.0])
         self.p1 = np.array([0.0, 0.0])
@@ -115,7 +115,6 @@ class PathPlannerNode(Node):
             if self.s < 0 or (self.s + self.dt * s_dot) < 0:
                 s_dot = 0.0
 
-                # 🔥 dette er forskjellen
                 v_s = max(v_s, 0.0)
                 v_s_s = 0.0
 
