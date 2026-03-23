@@ -17,11 +17,12 @@ class ThrustAllocator:
         [-ly1,    lx1,     -ly2,    lx2,     lx3]
         ], dtype='float')
 
-        self.K = np.diag([0.5, 0.5, 1.0])
+        self.K = np.diag([1.0, 1.0, 1.0])
 
         self.W = np.diag([1.0, 1.0, 1.0, 1.0, 15.0])
 
-        self.f_d = np.zeros(5)
+        #self.f_d = np.zeros(5, dtype='float')
+        self.f_d = np.array([0.0, 0.001, 0.0, -0.001, 0.0], dtype='float')
 
     def weighted_pinv(self):
         #" B_W^† = W^{-1} B^T (B W^{-1} B^T)^-1 "

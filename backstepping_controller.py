@@ -16,8 +16,11 @@ class backstepping_controller:
             [0.0, 2.13, 1.07]
         ])
 
-        self.K1 = np.diag([0.5, 0.5, 1.0])
-        self.K2 = np.diag([5.0, 5.0, 2.0])
+        self.K1 = np.diag([1.5, 1.5, 2.0])
+        self.K2 = np.diag([3.5, 3.5, 4.0])
+        #self.K1 = np.diag([1.0, 1.0, 1.0])
+        #self.K2 = np.diag([5.0, 5.0, 2.0])
+
 
         self.S = np.array([
                 [0, -1, 0],
